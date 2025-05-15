@@ -1,3 +1,5 @@
+//server/src/utils/jwt-utils.ts
+
 import { sign, verify } from "jsonwebtoken";
 
 const SECRETKEY = "my_secret";

@@ -1,3 +1,4 @@
+//server/src/utils/mail-handler.ts
 import { configDotenv } from "dotenv";
 import { createTransport } from "nodemailer";
 configDotenv();

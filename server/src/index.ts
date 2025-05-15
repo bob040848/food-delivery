@@ -1,3 +1,4 @@
+//server/src/index.ts
 import express from "express";
 import { configDotenv } from "dotenv";
 import { authRouter } from "./routers";

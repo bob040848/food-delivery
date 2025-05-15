@@ -1,3 +1,4 @@
+//server/src/controllers/auth/signup.controller.ts
 import { Request, Response } from "express";
 import { UserModel } from "../../models";
 import {
