@@ -4,6 +4,9 @@ import {
   signupController,
   verifyUserController,
   signinController,
+  resetPasswordController,
+  verifyResetPasswordRequestController,
+  resetPasswordRequestController,
 } from "../controllers";
 
 export const authRouter = Router();
@@ -11,4 +14,9 @@ export const authRouter = Router();
 authRouter.post("/sign-up", signupController);
 authRouter.get("/verify-user", verifyUserController);
 authRouter.post("/sign-in", signinController);
-// authRouter.post("/sign-in", signupController)
+authRouter.post("/reset-password-request", resetPasswordRequestController);
+authRouter.get(
+  "/verify-reset-password-request",
+  verifyResetPasswordRequestController
+);
+authRouter.post("/reset-password", resetPasswordController);
