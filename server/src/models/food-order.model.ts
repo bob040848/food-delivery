@@ -14,10 +14,13 @@ type FoodOrderSchemaType = {
   status: FoodOrderStatusEnum;
 };
 
-const FoodOrderItemSchema = new Schema({
-  food: { type: Schema.Types.ObjectId, ref: "Food", required: true },
-  quantity: { type: Number, required: true },
-});
+const FoodOrderItemSchema = new Schema(
+  {
+    food: { type: Schema.Types.ObjectId, ref: "Food", required: true },
+    quantity: { type: Number, required: true },
+  },
+  { _id: false }
+);
 
 const FoodOrderSchema = new Schema<FoodOrderSchemaType>(
   {

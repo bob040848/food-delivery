@@ -5,3 +5,4 @@ export * from "./reset-password.controller";
 export * from "./refresh-token.controller";
 export * from "./reset-password-request.controller";
 export * from "./verify-reset-password-request.controller";
+export * from "./promote-to-admin.controller";

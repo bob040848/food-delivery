@@ -1,1 +1,5 @@
-export * from "./food-category.controller";
+export * from "./get-all-foods";
+export * from "./get-foods-by-category";
+export * from "./create-food";
+export * from "./update-food";
+export * from "./delete-food";

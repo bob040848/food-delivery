@@ -6,10 +6,26 @@ import {
   updateFoodCategory,
   deleteFoodCategory,
 } from "../controllers";
+import { authenticateUser, authorizeAdmin } from "../middlewares";
 export const foodCategoryRouter = Router();
 
 // foodCategoryRouter.route("/").get(getAllFoodCategories).post();
 foodCategoryRouter.get("/all", getAllFoodCategories);
-foodCategoryRouter.post("/create", createFoodCategory);
-foodCategoryRouter.patch("/:foodCategoryId", updateFoodCategory);
-foodCategoryRouter.delete("/:foodCategoryId", deleteFoodCategory);
+foodCategoryRouter.post(
+  "/",
+  authenticateUser,
+  authorizeAdmin,
+  createFoodCategory
+);
+foodCategoryRouter.patch(
+  "/:foodCategoryId",
+  authenticateUser,
+  authorizeAdmin,
+  updateFoodCategory
+);
+foodCategoryRouter.delete(
+  "/:foodCategoryId",
+  authenticateUser,
+  authorizeAdmin,
+  deleteFoodCategory
+);

@@ -41,19 +41,19 @@ export const signinController = async (req: Request, res: Response) => {
       return;
     }
 
-    // const token = generateNewToken({
-    //   userId: user._id,
-    //   role: user.role,
-    // });
+    const token = generateNewToken({
+      userId: user._id,
+      role: user.role,
+    });
 
     res.status(200).send({
       message: "Login successful",
-      // token,
-      // user: {
-      //   email: user.email,
-      //   role: user.role,
-      //   id: user._id,
-      // },
+      token,
+      user: {
+        email: user.email,
+        role: user.role,
+        id: user._id,
+      },
     });
   } catch (error) {
     console.error("Sign-in error:", error);

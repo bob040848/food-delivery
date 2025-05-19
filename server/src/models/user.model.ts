@@ -1,7 +1,7 @@
 //server/src/models/user.model.ts
 import { Schema, model, Model, models } from "mongoose";
 
-enum UserRoleEnum {
+export enum UserRoleEnum {
   ADMIN = "Admin",
   USER = "User",
 }

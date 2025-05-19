@@ -3,7 +3,8 @@
 import { Request, Response } from "express";
 import { FoodCategoryModel } from "../../models";
 
-export const getAllFoodCategories = async (_req: Request, res: Response) => {
+// Get all food categories
+export const getAllFoodCategories = async (req: Request, res: Response) => {
   try {
     const categories = await FoodCategoryModel.find().sort({ categoryName: 1 });
     res.status(200).send(categories);
@@ -18,14 +19,14 @@ export const createFoodCategory = async (req: Request, res: Response) => {
   const { categoryName } = req.body;
 
   if (!categoryName) {
-    res.status(400).send({ message: "Category name is required" });
+    return res.status(400).send({ message: "Category name is required" });
   }
 
   try {
     // Check if category already exists
     const existingCategory = await FoodCategoryModel.findOne({ categoryName });
     if (existingCategory) {
-      res.status(409).send({ message: "Category already exists" });
+      return res.status(409).send({ message: "Category already exists" });
     }
 
     const newCategory = await FoodCategoryModel.create({ categoryName });
@@ -42,14 +43,14 @@ export const updateFoodCategory = async (req: Request, res: Response) => {
   const { categoryName } = req.body;
 
   if (!categoryName) {
-    res.status(400).send({ message: "Category name is required" });
+    return res.status(400).send({ message: "Category name is required" });
   }
 
   try {
     // Check if category exists
     const category = await FoodCategoryModel.findById(foodCategoryId);
     if (!category) {
-      res.status(404).send({ message: "Category not found" });
+      return res.status(404).send({ message: "Category not found" });
     }
 
     // Check if the new name conflicts with another category
@@ -59,7 +60,7 @@ export const updateFoodCategory = async (req: Request, res: Response) => {
     });
 
     if (existingCategory) {
-      res.status(409).send({ message: "Category name already in use" });
+      return res.status(409).send({ message: "Category name already in use" });
     }
 
     const updatedCategory = await FoodCategoryModel.findByIdAndUpdate(
@@ -83,7 +84,7 @@ export const deleteFoodCategory = async (req: Request, res: Response) => {
     // Check if category exists
     const category = await FoodCategoryModel.findById(foodCategoryId);
     if (!category) {
-      res.status(404).send({ message: "Category not found" });
+      return res.status(404).send({ message: "Category not found" });
     }
 
     // Delete the category
