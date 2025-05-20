@@ -9,8 +9,9 @@ import {
   resetPasswordRequestController,
   refreshTokenController,
   promoteToAdminController,
+  demoteToUserController,
 } from "../controllers";
-// import { authenticateUser, authorizeAdmin } from "../middlewares";
+import { authenticateUser, authorizeAdmin } from "../middlewares";
 
 export const authRouter = Router();
 
@@ -19,9 +20,15 @@ authRouter.get("/verify-user", verifyUserController);
 authRouter.post("/sign-in", signinController);
 authRouter.patch(
   "/promote-to-admin/:userId",
-  // authenticateUser,
-  // authorizeAdmin,
+  authenticateUser,
+  authorizeAdmin,
   promoteToAdminController
+);
+authRouter.patch(
+  "/demote-to-user/:userId",
+  authenticateUser,
+  authorizeAdmin,
+  demoteToUserController
 );
 authRouter.get("/refresh", refreshTokenController);
 authRouter.post("/reset-password-request", resetPasswordRequestController);

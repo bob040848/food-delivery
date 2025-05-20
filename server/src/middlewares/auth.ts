@@ -2,7 +2,6 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils";
 import { UserModel } from "../models";
-
 export interface AuthRequest extends Request {
   user?: {
     userId: string;
