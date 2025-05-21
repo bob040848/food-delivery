@@ -8,6 +8,7 @@ import {
   foodOrderRouter,
 } from "./routers";
 import { connectDatabase } from "./database";
+// import cors from "cors";
 
 const app = express();
 
@@ -17,6 +18,7 @@ connectDatabase();
 const port = 8000;
 
 app.use(express.json());
+// app.use(cors());
 
 app.use("/auth", authRouter);
 app.use("/food", foodRouter);

@@ -33,8 +33,8 @@ export const verifyUserController = async (req: Request, res: Response) => {
       { new: true }
     );
 
-    res.status(200).send({ message: "Successfully verified" });
-    // res.redirect(`${process.env.FRONTEND_ENDPOINT}/sign-in`);
+    // res.status(200).send({ message: "Successfully verified" });
+    res.redirect(`${process.env.FRONTEND_ENDPOINT}/auth/sign-in`);
   } catch (error) {
     console.error("Verification error:", error);
     res.status(401).send({ message: "Invalid or expired token" });
