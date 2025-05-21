@@ -8,7 +8,7 @@ import {
   foodOrderRouter,
 } from "./routers";
 import { connectDatabase } from "./database";
-// import cors from "cors";
+import cors from "cors";
 
 const app = express();
 
@@ -19,6 +19,12 @@ const port = 8000;
 
 app.use(express.json());
 // app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_ENDPOINT || 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use("/auth", authRouter);
 app.use("/food", foodRouter);

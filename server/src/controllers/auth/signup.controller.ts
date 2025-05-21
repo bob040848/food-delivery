@@ -10,9 +10,12 @@ import {
 type UserBody = {
   email: string;
   password: string;
+  phoneNumber?: string;
+  address?: string;
 };
+
 export const signupController = async (req: Request, res: Response) => {
-  const { email, password } = req.body as UserBody;
+  const { email, password, phoneNumber, address } = req.body as UserBody;
 
   if (!email || !password) {
     res.status(400).send({ message: "No email or password" });
@@ -26,20 +29,17 @@ export const signupController = async (req: Request, res: Response) => {
     return;
   }
 
-  //
-  // const userCount = await UserModel.countDocuments({});
-  // const role = userCount === 0 ? UserRoleEnum.ADMIN : UserRoleEnum.USER;
-  //
-
   const hashedPassword = encryptHash(password);
 
   const { _id } = await UserModel.create({
     email,
     password: hashedPassword,
-    // role: role,
+    phoneNumber: phoneNumber || "",
+    address: address || "",
+    orderedFoods: [],
   });
 
-  const token = generateNewToken({ userId: _id /* role: role*/ });
+  const token = generateNewToken({ userId: _id });
 
   sendUserVerificationLink(
     `${req.protocol}://${req.get("host")}/auth/verify-user?token=${token}`,

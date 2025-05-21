@@ -37,7 +37,7 @@ export const verifyResetPasswordRequestController = async (
       token,
     });
 
-    // res.redirect(`${process.env.FRONTEND_ENDPOINT}/reset-password?token=${token}`);
+    res.redirect(`${process.env.FRONTEND_ENDPOINT}/reset-password?token=${token}`);
   } catch (error) {
     console.error("Verification error:", error);
     res.status(401).send({ message: "Invalid or expired token" });

@@ -10,7 +10,7 @@ import { authenticateUser, authorizeAdmin } from "../middlewares";
 export const foodCategoryRouter = Router();
 
 // foodCategoryRouter.route("/").get(getAllFoodCategories).post();
-foodCategoryRouter.get("/all", getAllFoodCategories);
+foodCategoryRouter.get("/", getAllFoodCategories);
 foodCategoryRouter.post(
   "/",
   authenticateUser,

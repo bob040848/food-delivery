@@ -7,3 +7,4 @@ export * from "./reset-password-request.controller";
 export * from "./verify-reset-password-request.controller";
 export * from "./promote-to-admin.controller";
 export * from "./demote-to-user.controller";
+export * from "./forgot-password.controller"
