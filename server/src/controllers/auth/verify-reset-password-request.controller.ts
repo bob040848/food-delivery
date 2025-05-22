@@ -21,25 +21,26 @@ export const verifyResetPasswordRequestController = async (
       !decodedToken.userId ||
       decodedToken.purpose !== "password-reset"
     ) {
-      res.status(400).send({ message: "Invalid token" });
-      return;
+      return res.redirect(
+        `${process.env.FRONTEND_ENDPOINT}/auth/reset-password?error=invalid-token`
+      );
     }
 
     const user = await UserModel.findById(decodedToken.userId);
 
     if (!user) {
-      res.status(404).send({ message: "User not found" });
-      return;
+      return res.redirect(
+        `${process.env.FRONTEND_ENDPOINT}/auth/reset-password?error=user-not-found`
+      );
     }
 
-    res.status(200).send({
-      message: "Token verified. Please reset your password.",
-      token,
-    });
-
-    res.redirect(`${process.env.FRONTEND_ENDPOINT}/reset-password?token=${token}`);
+    res.redirect(
+      `${process.env.FRONTEND_ENDPOINT}/auth/reset-password?token=${token}`
+    );
   } catch (error) {
-    console.error("Verification error:", error);
-    res.status(401).send({ message: "Invalid or expired token" });
+    console.error("Token verification error:", error);
+    res.redirect(
+      `${process.env.FRONTEND_ENDPOINT}/auth/reset-password?error=expired-token`
+    );
   }
 };

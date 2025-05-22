@@ -1,9 +1,10 @@
-'use client';
+"use client";
+//client/src/app/dashboard/page.tsx
 
-import React from 'react';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -28,9 +29,10 @@ const Dashboard = () => {
               <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 p-6">
                 <h2 className="text-xl font-semibold mb-4">Recent Orders</h2>
                 <p className="text-gray-500">
-                  Your order history will appear here. Start browsing our delicious meals!
+                  Your order history will appear here. Start browsing our
+                  delicious meals!
                 </p>
-                
+
                 <div className="mt-8">
                   <Button>Browse Restaurant Menu</Button>
                 </div>

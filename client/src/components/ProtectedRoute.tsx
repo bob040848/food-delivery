@@ -1,34 +1,31 @@
-'use client';
+//client/src/components/ProtectedRoute.tsx
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-
-export default function ProtectedRoute({ 
+export default function ProtectedRoute({
   children,
-  allowedRoles = ['User', 'Admin'],
-}: { 
-  children: React.ReactNode,
-  allowedRoles?: string[]
+  allowedRoles = ["User", "Admin"],
+}: {
+  children: React.ReactNode;
+  allowedRoles?: string[];
 }) {
   const { isAuthenticated, isLoading, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/auth/sign-in');
+      router.push("/auth/sign-in");
     }
-    
-    // Check for role-based access if user is authenticated
+
     if (!isLoading && isAuthenticated && user && allowedRoles.length > 0) {
       if (!allowedRoles.includes(user.role)) {
-        // Redirect to unauthorized page or dashboard
-        router.push('/unauthorized');
+        router.push("/unauthorized");
       }
     }
   }, [isLoading, isAuthenticated, router, user, allowedRoles]);
 
-  // Show nothing while checking authentication
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -37,6 +34,5 @@ export default function ProtectedRoute({
     );
   }
 
-  // If authenticated and authorized, render children
   return isAuthenticated ? <>{children}</> : null;
 }
