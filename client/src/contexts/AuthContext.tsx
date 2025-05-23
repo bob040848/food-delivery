@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Initialize auth state from localStorage on component mount
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
@@ -37,7 +36,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error("Failed to parse stored user:", error);
-        // Clear invalid data
         localStorage.removeItem("token");
         localStorage.removeItem("user");
       }

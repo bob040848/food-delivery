@@ -1,6 +1,6 @@
 //server/src/controllers/auth/signup.controller.ts
 import { Request, Response } from "express";
-import { UserModel, UserRoleEnum } from "../../models";
+import { UserModel /*UserRoleEnum*/ } from "../../models";
 import {
   encryptHash,
   generateNewToken,

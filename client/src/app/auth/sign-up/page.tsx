@@ -1,6 +1,5 @@
-// app/auth/sign-up/page.tsx - Updated form submission handler
-"use client";
 //client/src/app/auth/sign-up/page.tsx
+"use client";
 
 import React, { useState } from "react";
 import { useFormik } from "formik";
@@ -8,8 +7,6 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
-
-// Shadcn components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,7 +24,7 @@ const SignUpSchema = Yup.object().shape({
     .email("Please enter a valid email")
     .required("Email is required"),
   password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
+    .min(5, "Password must be at least 5 characters")
     .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")

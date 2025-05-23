@@ -1,8 +1,9 @@
-"use client";
 //client/src/app/dashboard/page.tsx
+"use client";
 
 import React from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import AdminNavigation from "@/components/AdminNavigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
@@ -26,6 +27,8 @@ const Dashboard = () => {
         <main>
           <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div className="px-4 py-6 sm:px-0">
+              <AdminNavigation />
+
               <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 p-6">
                 <h2 className="text-xl font-semibold mb-4">Recent Orders</h2>
                 <p className="text-gray-500">

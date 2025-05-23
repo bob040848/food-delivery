@@ -6,7 +6,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { token, password } = body;
 
-    // Add detailed logging to debug the issue
     console.log("Reset password request body:", {
       token: token ? "present" : "missing",
       password: password ? "present" : "missing",
@@ -19,11 +18,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Try both 'password' and 'newPassword' field names
     const payload = {
       token,
-      password, // Try this first
-      newPassword: password, // Fallback in case backend expects 'newPassword'
+      password,
+      newPassword: password,
     };
 
     console.log("Sending to backend:", {
