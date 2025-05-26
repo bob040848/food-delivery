@@ -7,8 +7,10 @@ export const getAllFoodCategories = async (_req: Request, res: Response) => {
   try {
     const categories = await FoodCategoryModel.find().sort({ categoryName: 1 });
     res.status(200).send(categories);
+    return;
   } catch (error) {
     console.error("Error fetching food categories:", error);
     res.status(500).send({ message: "Internal server error" });
+    return;
   }
 };

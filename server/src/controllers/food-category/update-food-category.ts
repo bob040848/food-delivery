@@ -9,12 +9,14 @@ export const updateFoodCategory = async (req: Request, res: Response) => {
 
   if (!categoryName) {
     res.status(400).send({ message: "Category name is required" });
+    return;
   }
 
   try {
     const category = await FoodCategoryModel.findById(foodCategoryId);
     if (!category) {
       res.status(404).send({ message: "Category not found" });
+      return;
     }
 
     const existingCategory = await FoodCategoryModel.findOne({
@@ -24,6 +26,7 @@ export const updateFoodCategory = async (req: Request, res: Response) => {
 
     if (existingCategory) {
       res.status(409).send({ message: "Category name already in use" });
+      return;
     }
 
     const updatedCategory = await FoodCategoryModel.findByIdAndUpdate(
@@ -33,8 +36,10 @@ export const updateFoodCategory = async (req: Request, res: Response) => {
     );
 
     res.status(200).send(updatedCategory);
+    return;
   } catch (error) {
     console.error("Error updating food category:", error);
     res.status(500).send({ message: "Internal server error" });
+    return;
   }
 };

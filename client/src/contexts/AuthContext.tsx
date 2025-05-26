@@ -20,24 +20,52 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function isTokenValid(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp && payload.exp > Date.now() / 1000;
+  } catch {
+    return false;
+  }
+}
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
 
+  const clearAuth = () => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  };
+
   useEffect(() => {
+    setIsHydrated(true);
+
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
     if (storedToken && storedUser) {
       try {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
+        if (isTokenValid(storedToken)) {
+          const parsedUser = JSON.parse(storedUser);
+          setToken(storedToken);
+          setUser(parsedUser);
+
+          document.cookie = `token=${storedToken}; path=/; max-age=${
+            60 * 60 * 24 * 7
+          }`;
+        } else {
+          clearAuth();
+        }
       } catch (error) {
-        console.error("Failed to parse stored user:", error);
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        console.error("Failed to parse stored user or token:", error);
+        clearAuth();
       }
     }
 
@@ -49,15 +77,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(newUser);
     localStorage.setItem("token", newToken);
     localStorage.setItem("user", JSON.stringify(newUser));
+    document.cookie = `token=${newToken}; path=/; max-age=${60 * 60 * 24 * 7}`;
   };
 
   const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    clearAuth();
     router.push("/auth/sign-in");
   };
+
+  if (!isHydrated) {
+    return (
+      <AuthContext.Provider
+        value={{
+          user: null,
+          token: null,
+          isLoading: true,
+          isAuthenticated: false,
+          login: () => {},
+          logout: () => {},
+        }}
+      >
+        {children}
+      </AuthContext.Provider>
+    );
+  }
 
   return (
     <AuthContext.Provider
@@ -65,7 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         token,
         isLoading,
-        isAuthenticated: !!token,
+        isAuthenticated: !!token && !!user,
         login,
         logout,
       }}

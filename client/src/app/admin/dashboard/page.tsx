@@ -38,7 +38,12 @@ type DashboardStats = {
 };
 
 const AdminDashboard = () => {
-  const { user: currentUser, token, logout } = useAuth();
+  const {
+    user: currentUser,
+    token,
+    logout,
+    isLoading: authLoading,
+  } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,13 +54,22 @@ const AdminDashboard = () => {
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchUsers();
-    fetchStats();
-  }, []);
+    if (!authLoading && token) {
+      fetchUsers();
+      fetchStats();
+    }
+  }, [authLoading, token]);
 
   const fetchUsers = async () => {
+    if (!token) {
+      console.log("No token available for fetching users");
+      return;
+    }
+
     try {
       setIsLoading(true);
+      console.log("Fetching users with token:", token ? "present" : "missing");
+
       const response = await fetch("/api/admin/users", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -63,8 +77,11 @@ const AdminDashboard = () => {
         },
       });
 
+      console.log("Users API response status:", response.status);
+
       if (!response.ok) {
         if (response.status === 401) {
+          console.log("Unauthorized - logging out");
           logout();
           return;
         }
@@ -72,6 +89,7 @@ const AdminDashboard = () => {
       }
 
       const data = await response.json();
+      console.log("Users data received:", data);
       setUsers(data.users || []);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -82,7 +100,14 @@ const AdminDashboard = () => {
   };
 
   const fetchStats = async () => {
+    if (!token) {
+      console.log("No token available for fetching stats");
+      return;
+    }
+
     try {
+      console.log("Fetching stats with token:", token ? "present" : "missing");
+
       const response = await fetch("/api/admin/stats", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -90,8 +115,11 @@ const AdminDashboard = () => {
         },
       });
 
+      console.log("Stats API response status:", response.status);
+
       if (response.ok) {
         const data = await response.json();
+        console.log("Stats data received:", data);
         setStats(data);
       }
     } catch (error) {
@@ -112,6 +140,8 @@ const AdminDashboard = () => {
   });
 
   const handlePromoteUser = async (userId: string) => {
+    if (!token) return;
+
     setIsUpdating(userId);
     setError(null);
     setSuccess(null);
@@ -146,6 +176,8 @@ const AdminDashboard = () => {
   };
 
   const handleDemoteUser = async (userId: string) => {
+    if (!token) return;
+
     setIsUpdating(userId);
     setError(null);
     setSuccess(null);
@@ -187,6 +219,13 @@ const AdminDashboard = () => {
     });
   };
 
+  const handleRefreshData = () => {
+    if (token) {
+      fetchUsers();
+      fetchStats();
+    }
+  };
+
   useEffect(() => {
     if (success || error) {
       const timer = setTimeout(() => {
@@ -196,6 +235,17 @@ const AdminDashboard = () => {
       return () => clearTimeout(timer);
     }
   }, [success, error]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex items-center">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+          <span className="ml-2 text-gray-600">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <ProtectedRoute allowedRoles={["Admin"]}>
@@ -573,8 +623,8 @@ const AdminDashboard = () => {
               </h3>
               <div className="space-y-3">
                 <Button
-                  onClick={fetchUsers}
-                  disabled={isLoading}
+                  onClick={handleRefreshData}
+                  disabled={isLoading || !token}
                   className="w-full"
                 >
                   {isLoading ? (
@@ -586,12 +636,6 @@ const AdminDashboard = () => {
                     "Refresh Data"
                   )}
                 </Button>
-                {/* <Button variant="outline" className="w-full">
-                  Export Users
-                </Button>
-                <Button variant="outline" className="w-full">
-                  System Settings
-                </Button> */}
               </div>
             </div>
           </div>
