@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Shield, Users } from "lucide-react";
+import { Shield, Users, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const AdminNavigation = () => {
@@ -30,6 +30,18 @@ const AdminNavigation = () => {
           <Button className="bg-purple-600 hover:bg-purple-700">
             <Users className="h-4 w-4 mr-2" />
             User Management
+          </Button>
+        </Link>
+        <Link href="/admin/food-categories">
+          <Button className="bg-purple-600 hover:bg-purple-700">
+            <Tag className="h-4 w-4 mr-2" />
+            Food Categories
+          </Button>
+        </Link>
+        <Link href="/admin/foods">
+          <Button className="bg-purple-600 hover:bg-purple-700">
+            <Tag className="h-4 w-4 mr-2" />
+            Foods
           </Button>
         </Link>
       </div>

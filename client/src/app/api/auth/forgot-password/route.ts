@@ -13,18 +13,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/auth/reset-password-request`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      }
-    );
-
-    const data = await response.json();
+    await fetch(`${process.env.BACKEND_URL}/auth/reset-password-request`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
 
     return NextResponse.json({
       message:

@@ -1,7 +1,7 @@
 //client/src/app/auth/reset-password/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -180,106 +180,113 @@ const ResetPassword = () => {
   });
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-slate-50">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
-            Reset Password
-          </CardTitle>
-          <CardDescription className="text-center">
-            Create a new strong password for your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+    <Suspense>
+      <div className="flex justify-center items-center min-h-screen bg-slate-50">
+        <Card className="w-full max-w-md shadow-lg">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-center">
+              Reset Password
+            </CardTitle>
+            <CardDescription className="text-center">
+              Create a new strong password for your account
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {error && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
-          {success && (
-            <Alert className="mb-6 bg-green-50 border-green-200">
-              <AlertTitle className="text-green-800">Success!</AlertTitle>
-              <AlertDescription className="text-green-700">
-                {success}
-              </AlertDescription>
-            </Alert>
-          )}
+            {success && (
+              <Alert className="mb-6 bg-green-50 border-green-200">
+                <AlertTitle className="text-green-800">Success!</AlertTitle>
+                <AlertDescription className="text-green-700">
+                  {success}
+                </AlertDescription>
+              </Alert>
+            )}
 
-          <form onSubmit={formik.handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                New Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                {...formik.getFieldProps("password")}
-                className={
-                  formik.touched.password && formik.errors.password
-                    ? "border-red-500"
-                    : ""
-                }
-              />
-              {formik.touched.password && formik.errors.password && (
-                <p className="text-sm text-red-500">{formik.errors.password}</p>
-              )}
-              <div className="text-xs text-gray-500">
-                Password must be at least 8 characters with uppercase,
-                lowercase, and numbers
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-sm font-medium">
-                Confirm New Password
-              </label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                {...formik.getFieldProps("confirmPassword")}
-                className={
-                  formik.touched.confirmPassword &&
-                  formik.errors.confirmPassword
-                    ? "border-red-500"
-                    : ""
-                }
-              />
-              {formik.touched.confirmPassword &&
-                formik.errors.confirmPassword && (
+            <form onSubmit={formik.handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-medium">
+                  New Password
+                </label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  {...formik.getFieldProps("password")}
+                  className={
+                    formik.touched.password && formik.errors.password
+                      ? "border-red-500"
+                      : ""
+                  }
+                />
+                {formik.touched.password && formik.errors.password && (
                   <p className="text-sm text-red-500">
-                    {formik.errors.confirmPassword}
+                    {formik.errors.password}
                   </p>
                 )}
-            </div>
+                <div className="text-xs text-gray-500">
+                  Password must be at least 8 characters with uppercase,
+                  lowercase, and numbers
+                </div>
+              </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Resetting Password...
-                </>
-              ) : (
-                "Reset Password"
-              )}
+              <div className="space-y-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-sm font-medium"
+                >
+                  Confirm New Password
+                </label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  {...formik.getFieldProps("confirmPassword")}
+                  className={
+                    formik.touched.confirmPassword &&
+                    formik.errors.confirmPassword
+                      ? "border-red-500"
+                      : ""
+                  }
+                />
+                {formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword && (
+                    <p className="text-sm text-red-500">
+                      {formik.errors.confirmPassword}
+                    </p>
+                  )}
+              </div>
+
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Resetting Password...
+                  </>
+                ) : (
+                  "Reset Password"
+                )}
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter>
+            <Button
+              variant="ghost"
+              className="w-full text-sm text-gray-600"
+              onClick={() => router.push("/auth/sign-in")}
+            >
+              Back to Sign In
             </Button>
-          </form>
-        </CardContent>
-        <CardFooter>
-          <Button
-            variant="ghost"
-            className="w-full text-sm text-gray-600"
-            onClick={() => router.push("/auth/sign-in")}
-          >
-            Back to Sign In
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+          </CardFooter>
+        </Card>
+      </div>
+    </Suspense>
   );
 };
 

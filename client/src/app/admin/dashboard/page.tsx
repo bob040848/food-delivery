@@ -11,11 +11,16 @@ import {
   UserX,
   AlertTriangle,
   Loader2,
+  ArrowRight,
+  Settings,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import FoodCategoriesCard from "@/components/FoodCategoriesCard";
+import NavigationBar from "@/components/NavigationBar";
 
 type User = {
   _id: string;
@@ -38,6 +43,7 @@ type DashboardStats = {
 };
 
 const AdminDashboard = () => {
+  const router = useRouter();
   const {
     user: currentUser,
     token,
@@ -160,7 +166,6 @@ const AdminDashboard = () => {
         throw new Error(data.message || "Failed to promote user");
       }
 
-      const responseData = await response.json();
       setUsers((prev) =>
         prev.map((user) =>
           user._id === userId ? { ...user, role: "Admin" as const } : user
@@ -196,7 +201,6 @@ const AdminDashboard = () => {
         throw new Error(data.message || "Failed to demote user");
       }
 
-      const responseData = await response.json();
       setUsers((prev) =>
         prev.map((user) =>
           user._id === userId ? { ...user, role: "User" as const } : user
@@ -226,6 +230,10 @@ const AdminDashboard = () => {
     }
   };
 
+  const navigateToFoodCategories = () => {
+    router.push("/admin/food-categories");
+  };
+
   useEffect(() => {
     if (success || error) {
       const timer = setTimeout(() => {
@@ -250,22 +258,28 @@ const AdminDashboard = () => {
   return (
     <ProtectedRoute allowedRoles={["Admin"]}>
       <div className="min-h-screen bg-gray-50">
+        <NavigationBar />
         <header className="bg-white shadow-sm border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">
-                  Admin Dashboard
+                  Adminstrator's Section
                 </h1>
                 <p className="mt-1 text-sm text-gray-500">
                   Manage users, orders, and system settings
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                  <Shield className="h-4 w-4 mr-1" />
-                  Admin Access
-                </div>
+                <Button
+                  onClick={navigateToFoodCategories}
+                  variant="outline"
+                  className="flex items-center"
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Food Categories
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
                 <span className="text-gray-700">
                   Welcome, {currentUser?.email}
                 </span>
@@ -361,6 +375,70 @@ const AdminDashboard = () => {
                   <p className="text-2xl font-bold text-gray-900">
                     {stats?.newUsersThisWeek?.toLocaleString() || "0"}
                   </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <FoodCategoriesCard />
+
+            <div className="bg-white rounded-lg shadow">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Quick Actions
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Common administrative tasks
+                </p>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {users.length > 0
+                        ? Math.round(
+                            (users.filter((u) => u.isVerified).length /
+                              users.length) *
+                              100
+                          )
+                        : 0}
+                      %
+                    </div>
+                    <div className="text-blue-800 text-sm">
+                      Verification Rate
+                    </div>
+                  </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-600">
+                      {users.length > 0
+                        ? Math.round(
+                            (users.filter((u) => u.role === "Admin").length /
+                              users.length) *
+                              100
+                          )
+                        : 0}
+                      %
+                    </div>
+                    <div className="text-purple-800 text-sm">Admin Ratio</div>
+                  </div>
+                </div>
+                <div className="mt-4 space-y-2">
+                  <Button
+                    onClick={handleRefreshData}
+                    disabled={isLoading || !token}
+                    className="w-full"
+                    variant="outline"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Refreshing...
+                      </>
+                    ) : (
+                      "Refresh All Data"
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -619,23 +697,38 @@ const AdminDashboard = () => {
 
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Actions
+                System Health
               </h3>
               <div className="space-y-3">
-                <Button
-                  onClick={handleRefreshData}
-                  disabled={isLoading || !token}
-                  className="w-full"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Refreshing...
-                    </>
-                  ) : (
-                    "Refresh Data"
-                  )}
-                </Button>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">Total Orders</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {users.reduce(
+                      (acc, user) => acc + (user.orderedFoods?.length || 0),
+                      0
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">Avg Orders/User</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {users.length > 0
+                      ? (
+                          users.reduce(
+                            (acc, user) =>
+                              acc + (user.orderedFoods?.length || 0),
+                            0
+                          ) / users.length
+                        ).toFixed(1)
+                      : "0"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">Platform Status</span>
+                  <span className="text-sm font-medium text-green-600">
+                    ✓ Operational
+                  </span>
+                </div>
               </div>
             </div>
           </div>

@@ -49,11 +49,21 @@ export const updateFood = async (req: Request, res: Response) => {
     }
 
     const updateData: any = {};
-    if (foodName) updateData.foodName = foodName;
-    if (price !== undefined) updateData.price = price;
-    if (image) updateData.image = image;
-    if (ingredients) updateData.ingredients = ingredients;
-    if (category) updateData.category = [category];
+    if (foodName !== undefined && foodName.trim() !== "") {
+      updateData.foodName = foodName.trim();
+    }
+    if (price !== undefined) {
+      updateData.price = price;
+    }
+    if (image !== undefined && image.trim() !== "") {
+      updateData.image = image.trim();
+    }
+    if (ingredients !== undefined && ingredients.trim() !== "") {
+      updateData.ingredients = ingredients.trim();
+    }
+    if (category) {
+      updateData.category = [category];
+    }
 
     console.log(`Updating food ${foodId}: ${JSON.stringify(updateData)}`);
 
