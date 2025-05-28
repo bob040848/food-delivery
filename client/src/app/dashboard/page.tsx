@@ -34,7 +34,7 @@ const Dashboard = () => {
             <div className="px-4 py-6 sm:px-0">
               <AdminNavigation />
               <UserNavigation />
-              <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 p-6">
+              {/* <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 p-6">
                 <h2 className="text-xl font-semibold mb-4">Recent Orders</h2>
                 <p className="text-gray-500">
                   Your order history will appear here. Start browsing our
@@ -44,7 +44,7 @@ const Dashboard = () => {
                 <div className="mt-8">
                   <Button>Browse Restaurant Menu</Button>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </main>

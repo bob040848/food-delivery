@@ -6,12 +6,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   ShoppingBag,
   History,
-  Heart,
-  User,
-  MapPin,
-  CreditCard,
-  Star,
-  Utensils,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
