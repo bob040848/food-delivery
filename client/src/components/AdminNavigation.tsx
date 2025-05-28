@@ -44,6 +44,12 @@ const AdminNavigation = () => {
             Foods
           </Button>
         </Link>
+        <Link href="/admin/orders">
+          <Button className="bg-purple-600 hover:bg-purple-700">
+            <Tag className="h-4 w-4 mr-2" />
+            Food Orders
+          </Button>
+        </Link>
       </div>
     </div>
   );

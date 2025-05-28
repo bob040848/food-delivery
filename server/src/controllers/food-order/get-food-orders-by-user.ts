@@ -1,5 +1,4 @@
 // server/src/controllers/food-order/get-food-orders-by-user.ts
-
 import { Request, Response } from "express";
 import { FoodOrderModel, UserModel } from "../../models";
 import mongoose from "mongoose";
@@ -20,6 +19,7 @@ export const getFoodOrdersByUser = async (req: Request, res: Response) => {
     }
 
     const orders = await FoodOrderModel.find({ user: userId })
+      .populate("user", "email")
       .populate("foodOrderItems.food", "foodName price")
       .sort({ createdAt: -1 });
 

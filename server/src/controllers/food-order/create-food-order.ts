@@ -1,5 +1,4 @@
 // server/src/controllers/food-order/create-food-order.ts
-
 import { Request, Response } from "express";
 import { FoodOrderModel, UserModel, FoodModel } from "../../models";
 import mongoose from "mongoose";
@@ -63,7 +62,7 @@ export const createFoodOrder = async (req: Request, res: Response) => {
     }
 
     const newOrder = await FoodOrderModel.create({
-      user: [userId],
+      user: userId,
       totalPrice,
       foodOrderItems: validatedItems,
       status: "Pending",

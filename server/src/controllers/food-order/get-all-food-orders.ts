@@ -1,5 +1,4 @@
 // server/src/controllers/food-order/get-all-food-orders.ts
-
 import { Request, Response } from "express";
 import { FoodOrderModel } from "../../models";
 
