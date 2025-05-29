@@ -116,8 +116,9 @@ const ResetPasswordContent = () => {
         setTimeout(() => {
           router.push("/auth/sign-in?message=password-reset-success");
         }, 3000);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
       } finally {
         setIsSubmitting(false);
       }
@@ -159,7 +160,7 @@ const ResetPasswordContent = () => {
                 </h1>
 
                 <p className="text-xl mb-8 text-gray-200 leading-relaxed">
-                  Don't worry! We'll help you get a new reset link and get back
+                  Don&apos;t worry! We&apos;ll help you get a new reset link and get back
                   to enjoying delicious food.
                 </p>
 

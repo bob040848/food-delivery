@@ -44,6 +44,8 @@ export async function POST(req: NextRequest) {
       } catch (parseError) {
         console.error(
           "Failed to parse response as JSON:",
+          parseError,
+          "Response text:",
           responseText.substring(0, 200)
         );
         return NextResponse.json(

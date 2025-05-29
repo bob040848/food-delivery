@@ -70,8 +70,9 @@ const SignIn = () => {
         login(data.token, data.user);
 
         router.push("/dashboard");
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
       } finally {
         setIsSubmitting(false);
       }
@@ -269,7 +270,7 @@ const SignIn = () => {
               <CardFooter className="pt-6 pb-8">
                 <div className="w-full text-center">
                   <p className="text-sm text-gray-600">
-                    Don't have an account?{" "}
+                    Don&apos;t have an account?{" "}
                     <Link
                       href="/auth/sign-up"
                       className="font-semibold text-orange-600 hover:text-orange-700 transition-colors"

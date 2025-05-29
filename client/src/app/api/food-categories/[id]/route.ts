@@ -52,6 +52,8 @@ export async function PATCH(
     } catch (parseError) {
       console.error(
         "Failed to parse response as JSON:",
+        parseError,
+        "Response text:",
         responseText.substring(0, 200)
       );
       return NextResponse.json(
@@ -118,6 +120,8 @@ export async function DELETE(
     } catch (parseError) {
       console.error(
         "Failed to parse response as JSON:",
+        parseError,
+        "Response text:",
         responseText.substring(0, 200)
       );
       return NextResponse.json(

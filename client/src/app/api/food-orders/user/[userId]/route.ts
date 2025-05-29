@@ -27,20 +27,23 @@ export async function GET(
     });
 
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching user food orders:", error);
 
     let errorMessage = { message: "Internal server error" };
     let statusCode = 500;
 
-    try {
-      if (error.message) {
-        const parsedError = JSON.parse(error.message);
+    if (error && typeof error === 'object' && 'message' in error) {
+      try {
+        const parsedError = JSON.parse(error.message as string);
         errorMessage = parsedError;
         statusCode = parsedError.status || 500;
+      } catch (parseError) {
+        console.error("Failed to parse error message:", parseError);
+        errorMessage = { 
+          message: typeof error.message === 'string' ? error.message : "Internal server error" 
+        };
       }
-    } catch (parseError) {
-      errorMessage = { message: error.message || "Internal server error" };
     }
 
     return NextResponse.json(errorMessage, { status: statusCode });

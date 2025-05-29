@@ -1,7 +1,7 @@
 //client/src/app/admin/foods/edit/[id]/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Loader2, Save, X, Home, Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -67,7 +67,7 @@ const EditFoodPage = () => {
     category: "",
   });
 
-  const fetchFood = async () => {
+  const fetchFood = useCallback(async () => {
     try {
       const response = await fetch(`/api/foods/${foodId}`, {
         headers: {
@@ -82,14 +82,15 @@ const EditFoodPage = () => {
       const data = await response.json();
       console.log("Fetched food data:", data);
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
       console.error("Error fetching food:", err);
-      setError(err.message);
+      setError(errorMessage);
       throw err;
     }
-  };
+  }, [foodId, token]);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await fetch("/api/food-categories", {
         headers: {
@@ -104,12 +105,13 @@ const EditFoodPage = () => {
       const data = await response.json();
       console.log("Fetched categories:", data);
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
       console.error("Error fetching categories:", err);
-      setError(err.message);
+      setError(errorMessage);
       throw err;
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -155,7 +157,7 @@ const EditFoodPage = () => {
     };
 
     loadData();
-  }, [token, foodId]);
+  }, [token, foodId, fetchFood, fetchCategories]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -243,9 +245,10 @@ const EditFoodPage = () => {
       setTimeout(() => {
         router.push("/admin/foods");
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
       console.error("Error updating food:", err);
-      setError(err.message);
+      setError(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -277,7 +280,7 @@ const EditFoodPage = () => {
         <Alert variant="destructive" className="max-w-md">
           <AlertTitle>Access Denied</AlertTitle>
           <AlertDescription>
-            You don't have permission to access this page.
+            You don&apos;t have permission to access this page.
           </AlertDescription>
         </Alert>
       </div>
@@ -310,7 +313,7 @@ const EditFoodPage = () => {
         <Alert variant="destructive" className="max-w-md">
           <AlertTitle>Food Not Found</AlertTitle>
           <AlertDescription>
-            The food item you're trying to edit doesn't exist.
+            The food item you&apos;re trying to edit doesn&apos;t exist.
           </AlertDescription>
         </Alert>
       </div>
@@ -367,7 +370,7 @@ const EditFoodPage = () => {
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Edit Food</h1>
           <p className="text-gray-600 mt-2">
-            Update the details for "{food.foodName}"
+            Update the details for &quot;{food.foodName}&quot;
           </p>
         </div>
 

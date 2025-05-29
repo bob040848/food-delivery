@@ -136,7 +136,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({
                     <AlertDialogHeader>
                       <AlertDialogTitle>Delete Food Item</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to delete "{food.foodName}"? This
+                        Are you sure you want to delete &quot;{food.foodName}&ldquo;? This
                         action cannot be undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>

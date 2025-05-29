@@ -65,8 +65,9 @@ const ForgotPassword = () => {
           "✅ If an account exists with that email, a password reset link has been sent."
         );
         formik.resetForm();
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred"
+        setError(errorMessage);
       } finally {
         setIsSubmitting(false);
       }
@@ -107,7 +108,7 @@ const ForgotPassword = () => {
               </h1>
 
               <p className="text-xl mb-8 text-gray-200 leading-relaxed">
-                No worries! We'll help you get back to enjoying delicious food
+                No worries! We&apos;ll help you get back to enjoying delicious food
                 in just a few clicks.
               </p>
 
@@ -168,7 +169,7 @@ const ForgotPassword = () => {
                   Reset Password
                 </CardTitle>
                 <CardDescription className="text-gray-600 text-base">
-                  Enter your email address and we'll send you a password reset
+                  Enter your email address and we&apos;ll send you a password reset
                   link
                 </CardDescription>
               </CardHeader>

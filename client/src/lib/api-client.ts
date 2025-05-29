@@ -2,19 +2,24 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 type ApiOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-  body?: any;
+  body?: unknown;
   headers?: Record<string, string>;
 };
 
+interface ApiErrorData {
+  message?: string;
+  [key: string]: unknown;
+}
+
 class ApiError extends Error {
   status: number;
-  data: any;
+  data: ApiErrorData | null;
 
-  constructor(message: string, status: number, data: any) {
+  constructor(message: string, status: number, data: ApiErrorData | null) {
     super(message);
     this.name = "ApiError";
     this.status = status;
@@ -76,11 +81,11 @@ export class ApiClient {
     return this.request<T>(endpoint, { method: "GET" });
   }
 
-  async post<T>(endpoint: string, body?: any): Promise<T> {
+  async post<T>(endpoint: string, body?: unknown): Promise<T> {
     return this.request<T>(endpoint, { method: "POST", body });
   }
 
-  async put<T>(endpoint: string, body?: any): Promise<T> {
+  async put<T>(endpoint: string, body?: unknown): Promise<T> {
     return this.request<T>(endpoint, { method: "PUT", body });
   }
 
@@ -88,7 +93,7 @@ export class ApiClient {
     return this.request<T>(endpoint, { method: "DELETE" });
   }
 
-  async patch<T>(endpoint: string, body?: any): Promise<T> {
+  async patch<T>(endpoint: string, body?: unknown): Promise<T> {
     return this.request<T>(endpoint, { method: "PATCH", body });
   }
 }
@@ -100,7 +105,7 @@ import { useState, useEffect } from "react";
 export function useApi<T>(
   endpoint: string,
   options: ApiOptions = {},
-  dependencies: any[] = []
+  dependencies: React.DependencyList = []
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -110,6 +115,13 @@ export function useApi<T>(
   useEffect(() => {
     apiClient.setToken(token);
   }, [token]);
+
+  // Memoize options to prevent unnecessary re-renders
+  const memoizedOptions = useMemo(() => options, [
+    options.method,
+    options.body,
+    JSON.stringify(options.headers),
+  ]);
 
   const fetchData = useCallback(async () => {
     if (authLoading) {
@@ -125,7 +137,7 @@ export function useApi<T>(
     try {
       setLoading(true);
       setError(null);
-      const result = await apiClient.request<T>(endpoint, options);
+      const result = await apiClient.request<T>(endpoint, memoizedOptions);
       setData(result);
     } catch (err) {
       setError(err as ApiError);
@@ -133,7 +145,7 @@ export function useApi<T>(
     } finally {
       setLoading(false);
     }
-  }, [endpoint, token, isAuthenticated, authLoading, ...dependencies]);
+  }, [endpoint, token, isAuthenticated, authLoading, memoizedOptions, ...dependencies]);
 
   useEffect(() => {
     fetchData();
@@ -147,7 +159,7 @@ export function useApi<T>(
     try {
       setLoading(true);
       setError(null);
-      const result = await apiClient.request<T>(endpoint, options);
+      const result = await apiClient.request<T>(endpoint, memoizedOptions);
       setData(result);
       return result;
     } catch (err) {

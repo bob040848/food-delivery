@@ -13,6 +13,9 @@ type AuthResult = {
   token: string;
 };
 
+// Add type for backend API responses
+type BackendResponse<T = unknown> = T | { message?: string; success?: boolean };
+
 function decodeJWT(token: string): UserPayload | null {
   try {
     const parts = token.split(".");
@@ -122,11 +125,11 @@ export function requireAuth(requiredRole?: string) {
   };
 }
 
-export async function makeBackendRequest(
+export async function makeBackendRequest<T = unknown>(
   endpoint: string,
   token: string,
   options: RequestInit = {}
-): Promise<any> {
+): Promise<BackendResponse<T>> {
   const backendUrl = process.env.BACKEND_URL;
   if (!backendUrl) {
     throw new Error("BACKEND_URL environment variable is not configured");

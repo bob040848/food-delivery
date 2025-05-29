@@ -1,7 +1,7 @@
 // client/src/app/admin/dashboard/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Users,
   Shield,
@@ -59,14 +59,7 @@ const AdminDashboard = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!authLoading && token) {
-      fetchUsers();
-      fetchStats();
-    }
-  }, [authLoading, token]);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     if (!token) {
       console.log("No token available for fetching users");
       return;
@@ -103,9 +96,9 @@ const AdminDashboard = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token, logout]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     if (!token) {
       console.log("No token available for fetching stats");
       return;
@@ -131,7 +124,14 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error("Error fetching stats:", error);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (!authLoading && token) {
+      fetchUsers();
+      fetchStats();
+    }
+  }, [authLoading, token, fetchUsers, fetchStats]);
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch = user.email
@@ -173,8 +173,9 @@ const AdminDashboard = () => {
       );
       setSuccess("User promoted to admin successfully");
       fetchStats();
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      setError(errorMessage);
     } finally {
       setIsUpdating(null);
     }
@@ -208,8 +209,9 @@ const AdminDashboard = () => {
       );
       setSuccess("User demoted to regular user successfully");
       fetchStats();
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      setError(errorMessage);
     } finally {
       setIsUpdating(null);
     }
@@ -264,7 +266,7 @@ const AdminDashboard = () => {
             <div className="flex justify-between items-center py-6">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">
-                  Adminstrator's Section
+                  Adminstrator Section
                 </h1>
                 <p className="mt-1 text-sm text-gray-500">
                   Manage users, orders, and system settings

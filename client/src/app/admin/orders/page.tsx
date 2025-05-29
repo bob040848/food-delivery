@@ -282,7 +282,7 @@ const OrdersPage = () => {
         <Alert variant="destructive" className="max-w-md">
           <AlertTitle>Access Denied</AlertTitle>
           <AlertDescription>
-            You don't have permission to access this page.
+            You don&apos;t have permission to access this page.
           </AlertDescription>
         </Alert>
       </div>

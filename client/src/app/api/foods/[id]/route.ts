@@ -32,7 +32,7 @@ export async function GET(
     let data;
     try {
       data = JSON.parse(responseText);
-    } catch (parseError) {
+    } catch {
       return NextResponse.json(
         { message: "Invalid response from server" },
         { status: 502 }
@@ -47,7 +47,7 @@ export async function GET(
     }
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: "Failed to connect to server" },
       { status: 503 }
@@ -94,7 +94,7 @@ export async function PATCH(
     let data;
     try {
       data = JSON.parse(responseText);
-    } catch (parseError) {
+    } catch {
       return NextResponse.json(
         { message: "Invalid response from server" },
         { status: 502 }
@@ -109,7 +109,7 @@ export async function PATCH(
     }
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }
@@ -154,7 +154,7 @@ export async function DELETE(
     let data;
     try {
       data = JSON.parse(responseText);
-    } catch (parseError) {
+    } catch {
       return NextResponse.json(
         { message: "Invalid response from server" },
         { status: 502 }
@@ -169,7 +169,7 @@ export async function DELETE(
     }
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

@@ -1,7 +1,7 @@
 //client/src/app/food-categories/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Search,
   Grid,
@@ -55,6 +55,8 @@ type Food = {
   updatedAt: string;
 };
 
+type SortOption = "name" | "price-low" | "price-high";
+
 const FoodCategoriesPage = () => {
   const apiClient = useApiClient();
 
@@ -65,11 +67,9 @@ const FoodCategoriesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = useState<"name" | "price-low" | "price-high">(
-    "name"
-  );
+  const [sortBy, setSortBy] = useState<SortOption>("name");
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -81,17 +81,18 @@ const FoodCategoriesPage = () => {
 
       setCategories(categoriesData);
       setFoods(foodsData);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error fetching data:", err);
-      setError(err.message || "Failed to fetch data");
+      const errorMessage = err instanceof Error ? err.message : "Failed to fetch data";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [apiClient]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const filteredAndSortedFoods = foods
     .filter((food) => {
@@ -117,6 +118,10 @@ const FoodCategoriesPage = () => {
 
   const getFoodCountByCategory = (categoryId: string) => {
     return foods.filter((food) => food.category._id === categoryId).length;
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value as SortOption);
   };
 
   const FoodCard = ({ food }: { food: Food }) => (
@@ -333,10 +338,7 @@ const FoodCategoriesPage = () => {
                     </div>
                   </div>
 
-                  <Select
-                    value={sortBy}
-                    onValueChange={(value: any) => setSortBy(value)}
-                  >
+                  <Select value={sortBy} onValueChange={handleSortChange}>
                     <SelectTrigger className="w-full md:w-[180px]">
                       <SelectValue />
                     </SelectTrigger>

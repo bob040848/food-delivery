@@ -1,7 +1,7 @@
 //client/src/app/orders/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Clock,
   CheckCircle,
@@ -62,6 +62,8 @@ type FoodOrder = {
   updatedAt: string;
 };
 
+type SortOption = "newest" | "oldest" | "price-high" | "price-low";
+
 const UserOrdersPage = () => {
   const { user } = useAuth();
   const apiClient = useApiClient();
@@ -71,11 +73,9 @@ const UserOrdersPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<
-    "newest" | "oldest" | "price-high" | "price-low"
-  >("newest");
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
 
-  const fetchUserOrders = async () => {
+  const fetchUserOrders = useCallback(async () => {
     if (!user?.id) return;
 
     try {
@@ -85,19 +85,20 @@ const UserOrdersPage = () => {
         `/food-orders/user/${user.id}`
       );
       setOrders(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error fetching user orders:", err);
-      setError(err.message || "Failed to fetch orders");
+      const errorMessage = err instanceof Error ? err.message : "Failed to fetch orders";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id, apiClient]);
 
   useEffect(() => {
     if (user?.id) {
       fetchUserOrders();
     }
-  }, [user?.id]);
+  }, [user?.id, fetchUserOrders]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -378,7 +379,7 @@ const UserOrdersPage = () => {
 
                   <Select
                     value={sortBy}
-                    onValueChange={(value: any) => setSortBy(value)}
+                    onValueChange={(value: SortOption) => setSortBy(value)}
                   >
                     <SelectTrigger className="w-full md:w-[180px]">
                       <SelectValue />

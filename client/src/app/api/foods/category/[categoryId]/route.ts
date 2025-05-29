@@ -32,7 +32,7 @@ export async function GET(
     let data;
     try {
       data = JSON.parse(responseText);
-    } catch (parseError) {
+    } catch {
       return NextResponse.json(
         { message: "Invalid response from server" },
         { status: 502 }
@@ -47,7 +47,7 @@ export async function GET(
     }
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: "Failed to connect to server" },
       { status: 503 }

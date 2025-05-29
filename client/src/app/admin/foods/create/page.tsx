@@ -1,7 +1,7 @@
 //client/src/app/admin/foods/create/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Save, Home, Settings, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -48,6 +48,10 @@ type FormErrors = {
   category?: string;
 };
 
+type ApiError = {
+  message: string;
+} & Error;
+
 const CreateFoodPage = () => {
   const { token, user } = useAuth();
   const router = useRouter();
@@ -68,7 +72,7 @@ const CreateFoodPage = () => {
 
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       setCategoriesLoading(true);
       const response = await fetch("/api/food-categories", {
@@ -83,18 +87,19 @@ const CreateFoodPage = () => {
 
       const data = await response.json();
       setCategories(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const error = err as ApiError;
+      setError(error.message);
     } finally {
       setCategoriesLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     if (token) {
       fetchCategories();
     }
-  }, [token]);
+  }, [token, fetchCategories]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -194,8 +199,9 @@ const CreateFoodPage = () => {
       setTimeout(() => {
         router.push("/admin/foods");
       }, 1500);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const error = err as ApiError;
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -221,7 +227,7 @@ const CreateFoodPage = () => {
         <Alert variant="destructive" className="max-w-md">
           <AlertTitle>Access Denied</AlertTitle>
           <AlertDescription>
-            You don't have permission to access this page.
+            You don&apos;t have permission to access this page.
           </AlertDescription>
         </Alert>
       </div>

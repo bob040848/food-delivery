@@ -1,7 +1,7 @@
 //client/src/app/admin/food-categories/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -48,6 +48,10 @@ type FoodCategory = {
   updatedAt: string;
 };
 
+type ApiError = {
+  message: string;
+};
+
 const FoodCategories = () => {
   const { user, token } = useAuth();
   const router = useRouter();
@@ -63,7 +67,7 @@ const FoodCategories = () => {
     null
   );
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch("/api/food-categories", {
@@ -78,18 +82,19 @@ const FoodCategories = () => {
 
       const data = await response.json();
       setCategories(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     if (token) {
       fetchCategories();
     }
-  }, [token]);
+  }, [token, fetchCategories]);
 
   const createFormik = useFormik({
     initialValues: {
@@ -114,15 +119,17 @@ const FoodCategories = () => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Failed to create category");
+          const apiError = data as ApiError;
+          throw new Error(apiError.message || "Failed to create category");
         }
 
         setSuccess("Category created successfully");
         resetForm();
         setShowCreateDialog(false);
         fetchCategories();
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
       } finally {
         setIsSubmitting(false);
       }
@@ -158,15 +165,17 @@ const FoodCategories = () => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Failed to update category");
+          const apiError = data as ApiError;
+          throw new Error(apiError.message || "Failed to update category");
         }
 
         setSuccess("Category updated successfully");
         setShowEditDialog(false);
         setSelectedCategory(null);
         fetchCategories();
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
       } finally {
         setIsSubmitting(false);
       }
@@ -194,15 +203,17 @@ const FoodCategories = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to delete category");
+        const apiError = data as ApiError;
+        throw new Error(apiError.message || "Failed to delete category");
       }
 
       setSuccess("Category deleted successfully");
       setShowDeleteDialog(false);
       setSelectedCategory(null);
       fetchCategories();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -224,7 +235,7 @@ const FoodCategories = () => {
         <Alert variant="destructive" className="max-w-md">
           <AlertTitle>Access Denied</AlertTitle>
           <AlertDescription>
-            You don't have permission to access this page.
+            You don&apos;t have permission to access this page.
           </AlertDescription>
         </Alert>
       </div>
@@ -480,9 +491,9 @@ const FoodCategories = () => {
             <DialogHeader>
               <DialogTitle>Delete Category</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete "
+                Are you sure you want to delete &quot;
                 {selectedCategory?.categoryName}
-                "? This action cannot be undone.
+                &quot;? This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>

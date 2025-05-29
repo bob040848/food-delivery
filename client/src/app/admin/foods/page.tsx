@@ -1,7 +1,7 @@
 //client/src/app/admin/foods/page.tsx
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
@@ -65,7 +65,7 @@ const FoodsPage = () => {
   );
   const [sortBy, setSortBy] = useState<string>("name");
 
-  const fetchAllFoods = async () => {
+  const fetchAllFoods = useCallback(async () => {
     try {
       const response = await fetch("/api/foods", {
         headers: {
@@ -80,13 +80,14 @@ const FoodsPage = () => {
       const data = await response.json();
       setAllFoods(data);
       return data;
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+      setError(errorMessage);
       return [];
     }
-  };
+  }, [token]);
 
-  const fetchFoodsByCategory = async (catId: string) => {
+  const fetchFoodsByCategory = useCallback(async (catId: string) => {
     try {
       const response = await fetch(`/api/foods/category/${catId}`, {
         headers: {
@@ -100,13 +101,14 @@ const FoodsPage = () => {
 
       const data = await response.json();
       return data;
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+      setError(errorMessage);
       return [];
     }
-  };
+  }, [token]);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await fetch("/api/food-categories", {
         headers: {
@@ -120,10 +122,11 @@ const FoodsPage = () => {
 
       const data = await response.json();
       setCategories(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+      setError(errorMessage);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -144,7 +147,7 @@ const FoodsPage = () => {
     };
 
     loadData();
-  }, [token, categoryId]);
+  }, [token, categoryId, fetchCategories, fetchFoodsByCategory, fetchAllFoods]);
 
   useEffect(() => {
     let filteredFoods = [...allFoods];
@@ -233,8 +236,9 @@ const FoodsPage = () => {
         const allFoodsData = await fetchAllFoods();
         setAllFoods(allFoodsData);
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+      setError(errorMessage);
     }
   };
 
@@ -254,7 +258,7 @@ const FoodsPage = () => {
         <Alert variant="destructive" className="max-w-md">
           <AlertTitle>Access Denied</AlertTitle>
           <AlertDescription>
-            You don't have permission to access this page.
+            You don&apos;t have permission to access this page.
           </AlertDescription>
         </Alert>
       </div>

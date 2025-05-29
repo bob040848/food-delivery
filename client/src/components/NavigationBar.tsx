@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Shield, User, Settings } from "lucide-react";
+import { Home, Shield, User} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const NavigationBar = () => {

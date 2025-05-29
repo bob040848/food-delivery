@@ -61,14 +61,15 @@ const SignUp = () => {
       setSuccess(null);
 
       try {
-        const { confirmPassword, ...signupData } = values;
+        // Extract only email and password for API call
+        const { email, password } = values;
 
         const response = await fetch("/api/auth/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(signupData),
+          body: JSON.stringify({ email, password }),
         });
 
         const data = await response.json();
@@ -85,8 +86,9 @@ const SignUp = () => {
         setTimeout(() => {
           router.push("/auth/sign-in");
         }, 3000);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
+        setError(errorMessage);
       } finally {
         setIsSubmitting(false);
       }

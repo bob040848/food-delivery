@@ -45,8 +45,9 @@ const FoodCategoriesCard = () => {
 
       const data = await response.json();
       setCategories(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message: "An unknown error occurred"
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

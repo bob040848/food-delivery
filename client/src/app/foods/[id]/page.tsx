@@ -1,7 +1,7 @@
 //client/src/app/foods/[id]/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   ArrowLeft,
   ChefHat,
@@ -53,7 +53,7 @@ const FoodDetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
 
-  const fetchFood = async () => {
+  const fetchFood = useCallback(async () => {
     if (!foodId) return;
 
     try {
@@ -61,19 +61,20 @@ const FoodDetailPage = () => {
       setError(null);
       const data = await apiClient.get<Food>(`/foods/${foodId}`);
       setFood(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error fetching food:", err);
-      setError(err.message || "Failed to fetch food details");
+      const errorMessage = err instanceof Error ? err.message : "Failed to fetch food details";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [foodId, apiClient]);
 
   useEffect(() => {
     if (foodId) {
       fetchFood();
     }
-  }, [foodId]);
+  }, [foodId, fetchFood]);
 
   const handleQuantityChange = (change: number) => {
     const newQuantity = quantity + change;
