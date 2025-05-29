@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: Promise<{ userId: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -22,7 +22,7 @@ export async function PATCH(
       );
     }
 
-    const { userId } = await params;
+    const { userId } = await context.params;
     if (!userId) {
       return NextResponse.json(
         { message: "User ID is required" },
