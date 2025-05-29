@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
     let data;
     try {
       data = JSON.parse(responseText);
-    } catch (_parseError) {
+    } catch {
       return NextResponse.json(
         { message: "Invalid response from server" },
         { status: 502 }
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json(data);
-  } catch (_error) {
+  } catch {
     return NextResponse.json(
       { message: "Failed to connect to server" },
       { status: 503 }
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     let data;
     try {
       data = JSON.parse(responseText);
-    } catch (_parseError) {
+    } catch {
       return NextResponse.json(
         { message: "Invalid response from server" },
         { status: 502 }
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(data, { status: 201 });
-  } catch (_error) {
+  } catch {
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }
