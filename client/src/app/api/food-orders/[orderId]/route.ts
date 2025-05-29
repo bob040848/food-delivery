@@ -4,7 +4,7 @@ import { requireAuth, makeBackendRequest } from "@/lib/auth-middleware";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { orderId: string } }
+  context:  { params: Promise<{ orderId: string }> }
 ) {
   try {
     const authResult = requireAuth("Admin")(req);
@@ -14,7 +14,7 @@ export async function PATCH(
 
     const { token } = authResult;
     const body = await req.json();
-    const { orderId } = await params;
+    const { orderId } = await context.params;
 
     if (!orderId) {
       return NextResponse.json(

@@ -4,7 +4,7 @@ import { requireAuth, makeBackendRequest } from "@/lib/auth-middleware";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: Promise<{ userId: string }> }
 ) {
   try {
     const authResult = requireAuth()(req);
@@ -13,7 +13,7 @@ export async function GET(
     }
 
     const { token } = authResult;
-    const { userId } = await params;
+    const { userId } = await context.params;
 
     if (!userId) {
       return NextResponse.json(

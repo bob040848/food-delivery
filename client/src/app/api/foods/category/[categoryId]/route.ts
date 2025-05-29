@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { categoryId: string } }
+  context: { params: Promise<{ categoryId: string } >}
 ) {
   try {
-    const { categoryId } = await params;
+    const { categoryId } = await context.params;
 
     const backendUrl = process.env.BACKEND_URL;
     if (!backendUrl) {
