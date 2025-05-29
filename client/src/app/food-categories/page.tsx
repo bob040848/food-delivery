@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import NavigationBar from "@/components/NavigationBar";
-import { useAuth } from "@/contexts/AuthContext";
 import { useApiClient } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,7 +56,6 @@ type Food = {
 };
 
 const FoodCategoriesPage = () => {
-  const { user } = useAuth();
   const apiClient = useApiClient();
 
   const [categories, setCategories] = useState<FoodCategory[]>([]);

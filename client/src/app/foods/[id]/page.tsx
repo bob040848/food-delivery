@@ -18,14 +18,13 @@ import {
 } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import NavigationBar from "@/components/NavigationBar";
-import { useAuth } from "@/contexts/AuthContext";
 import { useApiClient } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 type FoodCategory = {
   _id: string;
@@ -44,10 +43,8 @@ type Food = {
 };
 
 const FoodDetailPage = () => {
-  const { user } = useAuth();
   const apiClient = useApiClient();
   const params = useParams();
-  const router = useRouter();
   const foodId = params.id as string;
 
   const [food, setFood] = useState<Food | null>(null);
