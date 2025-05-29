@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Shield, Users, Tag } from "lucide-react";
+import { Shield, Users, Tag, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const AdminNavigation = () => {
@@ -12,7 +12,6 @@ const AdminNavigation = () => {
   if (!user || user.role !== "Admin") {
     return null;
   }
-
   return (
     <div className="bg-purple-50 border-l-4 border-purple-400 p-4 mb-6">
       <div className="flex items-center mb-3">
@@ -23,7 +22,7 @@ const AdminNavigation = () => {
       </div>
       <p className="text-purple-700 text-sm mb-4">
         You have administrative privileges. Access additional management tools
-        below.
+        below.(and also Your Orders as well.)
       </p>
       <div className="flex flex-wrap gap-3">
         <Link href="/admin/dashboard">
@@ -48,6 +47,12 @@ const AdminNavigation = () => {
           <Button className="bg-purple-600 hover:bg-purple-700">
             <Tag className="h-4 w-4 mr-2" />
             Food Orders
+          </Button>
+        </Link>
+        <Link href="/orders">
+          <Button className="bg-blue-600 hover:bg-blue-700">
+            <History className="h-4 w-4 mr-2" />
+            My Orders
           </Button>
         </Link>
       </div>

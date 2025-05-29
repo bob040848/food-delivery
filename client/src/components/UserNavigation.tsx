@@ -3,10 +3,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  ShoppingBag,
-  History,
-} from "lucide-react";
+import { ShoppingBag, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const UserNavigation = () => {
@@ -31,13 +28,6 @@ const UserNavigation = () => {
       description: "View Categories",
       color: "bg-green-600 hover:bg-green-700",
     },
-    // {
-    //   href: "/orders/history",
-    //   icon: History,
-    //   label: "Order History",
-    //   description: "View your past orders",
-    //   color: "bg-gray-600 hover:bg-gray-700",
-    // },
   ];
 
   return (

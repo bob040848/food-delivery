@@ -47,14 +47,14 @@ type FoodOrder = {
   status: "Pending" | "Canceled" | "Delivered";
   createdAt: string;
   updatedAt: string;
-  userOrderNumber?: number; // New field for user-specific order number
+  userOrderNumber?: number;
 };
 
 type OrderCardProps = {
   order: FoodOrder;
   onStatusUpdate?: (orderId: string, newStatus: string) => Promise<void>;
   showActions?: boolean;
-  userOrderNumber?: number; // Pass this from parent component
+  userOrderNumber?: number;
 };
 
 export const OrderCard: React.FC<OrderCardProps> = ({
@@ -108,13 +108,11 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     return new Date(dateString).toLocaleString();
   };
 
-  // Helper function to get user email safely
   const getUserEmail = () => {
     if (!order.user) return "Unknown User";
     return order.user.email || "Unknown User";
   };
 
-  // Get the display order number - prefer passed userOrderNumber, fallback to order's userOrderNumber
   const getDisplayOrderNumber = () => {
     const orderNum = userOrderNumber || order.userOrderNumber;
     return orderNum ? `#${orderNum}` : `#${order._id.slice(-8)}`;

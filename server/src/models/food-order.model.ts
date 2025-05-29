@@ -14,7 +14,7 @@ type FoodOrderItemType = {
 
 type FoodOrderSchemaType = {
   user: Schema.Types.ObjectId;
-  userOrderNumber: number;
+
   totalPrice: number;
   foodOrderItems: FoodOrderItemType[];
   status: FoodOrderStatusEnum;
@@ -35,10 +35,7 @@ const FoodOrderSchema = new Schema<FoodOrderSchemaType>(
       ref: "User",
       required: true,
     },
-    userOrderNumber: {
-      type: Number,
-      required: true,
-    },
+
     totalPrice: {
       type: Number,
       required: true,

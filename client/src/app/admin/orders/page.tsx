@@ -50,7 +50,7 @@ type FoodOrder = {
   status: "Pending" | "Canceled" | "Delivered";
   createdAt: string;
   updatedAt: string;
-  userOrderNumber?: number; // New field for user-specific order number
+  userOrderNumber?: number;
 };
 
 type User = {
@@ -80,11 +80,9 @@ const OrdersPage = () => {
     refetch,
   } = useApi<FoodOrder[]>("/food-orders");
 
-  // Calculate user-specific order numbers
   const calculateUserOrderNumbers = (ordersList: FoodOrder[]) => {
     const userOrderMap: Record<string, Record<string, number>> = {};
 
-    // Group orders by user and sort by creation date
     const ordersByUser: Record<string, FoodOrder[]> = {};
 
     ordersList.forEach((order) => {
@@ -97,7 +95,6 @@ const OrdersPage = () => {
       }
     });
 
-    // Sort each user's orders by creation date and assign numbers
     Object.entries(ordersByUser).forEach(([userId, userOrders]) => {
       const sortedOrders = [...userOrders].sort(
         (a, b) =>
@@ -225,7 +222,6 @@ const OrdersPage = () => {
         case "status":
           return a.status.localeCompare(b.status);
         case "order-number":
-          // Sort by user order number
           const aUserId = a.user?._id;
           const bUserId = b.user?._id;
           const aOrderNum =

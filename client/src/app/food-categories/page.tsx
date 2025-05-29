@@ -276,7 +276,6 @@ const FoodCategoriesPage = () => {
               </Alert>
             )}
 
-            {/* Categories Overview */}
             <div className="mb-8">
               <h2 className="text-xl font-semibold mb-4">Food Categories</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -321,7 +320,6 @@ const FoodCategoriesPage = () => {
               </div>
             </div>
 
-            {/* Search and Filter Controls */}
             <Card className="mb-6">
               <CardContent className="p-4">
                 <div className="flex flex-col md:flex-row gap-4">
@@ -377,7 +375,6 @@ const FoodCategoriesPage = () => {
               </CardContent>
             </Card>
 
-            {/* Food Results */}
             <div className="mb-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold">

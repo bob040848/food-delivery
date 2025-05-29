@@ -3,7 +3,7 @@ import { UserModel } from "../../models";
 import { AuthRequest } from "../../middlewares/auth";
 
 export const getAdminStatsController = async (
-  req: AuthRequest,
+  _req: AuthRequest,
   res: Response
 ) => {
   try {

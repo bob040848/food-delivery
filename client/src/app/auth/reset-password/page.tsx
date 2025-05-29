@@ -5,7 +5,17 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Loader2,
+  Lock,
+  Star,
+  CheckCircle,
+  Clock,
+  Truck,
+  AlertCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -31,7 +41,7 @@ const ResetPasswordSchema = Yup.object().shape({
     .required("Please confirm your password"),
 });
 
-const ResetPassword = () => {
+const ResetPasswordContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -40,6 +50,12 @@ const ResetPassword = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const cloudinaryBaseUrl = "https://res.cloudinary.com/ddrmhu7ak/image/upload";
+  const imagePublicId = "sign-up-food-delivery-pic_bnxl0o";
+
+  const heroImageUrl = `${cloudinaryBaseUrl}/f_auto,q_auto,w_1200,h_800,c_fill/${imagePublicId}.png`;
 
   useEffect(() => {
     if (errorParam) {
@@ -62,77 +78,6 @@ const ResetPassword = () => {
       }
     }
   }, [errorParam]);
-
-  if (!token && !errorParam) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-slate-50">
-        <Card className="w-full max-w-md shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center text-red-600">
-              <AlertCircle className="h-8 w-8 mx-auto mb-2" />
-              Invalid Request
-            </CardTitle>
-            <CardDescription className="text-center">
-              This password reset link is invalid or has expired.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button
-              className="w-full"
-              onClick={() => router.push("/api/auth/forgot-password")}
-            >
-              Request New Reset Link
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => router.push("/api/auth/sign-in")}
-            >
-              Back to Sign In
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (errorParam && error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-slate-50">
-        <Card className="w-full max-w-md shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center text-red-600">
-              <AlertCircle className="h-8 w-8 mx-auto mb-2" />
-              Reset Link Error
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-
-            <div className="space-y-2">
-              <Button
-                className="w-full"
-                onClick={() => router.push("/auth/forgot-password")}
-              >
-                Request New Reset Link
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => router.push("/auth/sign-in")}
-              >
-                Back to Sign In
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   const formik = useFormik({
     initialValues: {
@@ -164,7 +109,7 @@ const ResetPassword = () => {
         }
 
         setSuccess(
-          "Your password has been reset successfully! Redirecting to sign in..."
+          "✅ Your password has been reset successfully! Redirecting to sign in..."
         );
         formik.resetForm();
 
@@ -179,113 +124,373 @@ const ResetPassword = () => {
     },
   });
 
-  return (
-    <Suspense>
-      <div className="flex justify-center items-center min-h-screen bg-slate-50">
-        <Card className="w-full max-w-md shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">
-              Reset Password
-            </CardTitle>
-            <CardDescription className="text-center">
-              Create a new strong password for your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {error && (
-              <Alert variant="destructive" className="mb-6">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
-            {success && (
-              <Alert className="mb-6 bg-green-50 border-green-200">
-                <AlertTitle className="text-green-800">Success!</AlertTitle>
-                <AlertDescription className="text-green-700">
-                  {success}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            <form onSubmit={formik.handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">
-                  New Password
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  {...formik.getFieldProps("password")}
-                  className={
-                    formik.touched.password && formik.errors.password
-                      ? "border-red-500"
-                      : ""
-                  }
+  if ((!token && !errorParam) || (errorParam && error)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+        <div className="flex min-h-screen">
+          <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+            <div className="absolute inset-0">
+              {!imageError ? (
+                <Image
+                  src={heroImageUrl}
+                  alt="Delicious food delivery"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  quality={85}
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgMAAAAAAAAAAAAAAAAAAAECEgMR/9oADAMBAAIRAxEAPwCdABmZOxpNnaMg4HjMP/9k="
+                  onError={() => setImageError(true)}
                 />
-                {formik.touched.password && formik.errors.password && (
-                  <p className="text-sm text-red-500">
-                    {formik.errors.password}
-                  </p>
-                )}
-                <div className="text-xs text-gray-500">
-                  Password must be at least 8 characters with uppercase,
-                  lowercase, and numbers
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-red-500 to-pink-600"></div>
+              )}
+            </div>
+
+            <div className="absolute inset-0 bg-black/40"></div>
+
+            <div className="relative z-10 flex flex-col justify-center items-start p-12 text-white">
+              <div className="max-w-md">
+                <h1 className="text-4xl font-bold mb-6 leading-tight">
+                  Reset Link
+                  <br />
+                  <span className="text-orange-300">Issue</span>
+                </h1>
+
+                <p className="text-xl mb-8 text-gray-200 leading-relaxed">
+                  Don't worry! We'll help you get a new reset link and get back
+                  to enjoying delicious food.
+                </p>
+
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                      <Truck className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-lg">Fast 30-minute delivery</span>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-lg">Fresh & quality guaranteed</span>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                      <Star className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-lg">Top-rated restaurants</span>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <Clock className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-lg">24/7 customer support</span>
+                  </div>
+                </div>
+
+                <div className="mt-12 grid grid-cols-2 gap-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-orange-300">
+                      50K+
+                    </div>
+                    <div className="text-sm text-gray-300">Happy Customers</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-orange-300">
+                      200+
+                    </div>
+                    <div className="text-sm text-gray-300">
+                      Partner Restaurants
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-8">
+            <div className="w-full max-w-md">
+              <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm lg:bg-white">
+                <CardHeader className="space-y-2 text-center pb-8">
+                  <div className="mx-auto w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mb-4">
+                    <AlertCircle className="w-8 h-8 text-white" />
+                  </div>
+                  <CardTitle className="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
+                    Reset Link Error
+                  </CardTitle>
+                  <CardDescription className="text-gray-600 text-base">
+                    There was an issue with your password reset link
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-6">
+                  <Alert
+                    variant="destructive"
+                    className="border-red-200 bg-red-50"
+                  >
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle className="text-red-800">Error</AlertTitle>
+                    <AlertDescription className="text-red-700">
+                      {error ||
+                        "This password reset link is invalid or has expired."}
+                    </AlertDescription>
+                  </Alert>
+
+                  <div className="space-y-4">
+                    <Button
+                      className="w-full h-12 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-xl shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+                      onClick={() => router.push("/auth/forgot-password")}
+                    >
+                      Request New Reset Link
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full h-12 border-2 border-gray-200 hover:border-orange-300 font-semibold rounded-xl transition-all duration-200"
+                      onClick={() => router.push("/auth/sign-in")}
+                    >
+                      Back to Sign In
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+      <div className="flex min-h-screen">
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+          <div className="absolute inset-0">
+            {!imageError ? (
+              <Image
+                src={heroImageUrl}
+                alt="Delicious food delivery"
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                quality={85}
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgMAAAAAAAAAAAAAAAAAAAECEgMR/9oADAMBAAIRAxEAPwCdABmZOxpNnaMg4HjMP/9k="
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-red-500 to-pink-600"></div>
+            )}
+          </div>
+
+          <div className="absolute inset-0 bg-black/40"></div>
+
+          <div className="relative z-10 flex flex-col justify-center items-start p-12 text-white">
+            <div className="max-w-md">
+              <h1 className="text-4xl font-bold mb-6 leading-tight">
+                Create New
+                <br />
+                <span className="text-orange-300">Password</span>
+              </h1>
+
+              <p className="text-xl mb-8 text-gray-200 leading-relaxed">
+                Almost there! Create a strong password and get back to enjoying
+                delicious food delivered to your door.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                    <Truck className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg">Fast 30-minute delivery</span>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg">Fresh & quality guaranteed</span>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                    <Star className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg">Top-rated restaurants</span>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <Clock className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg">24/7 customer support</span>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label
-                  htmlFor="confirmPassword"
-                  className="text-sm font-medium"
-                >
-                  Confirm New Password
-                </label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  {...formik.getFieldProps("confirmPassword")}
-                  className={
-                    formik.touched.confirmPassword &&
-                    formik.errors.confirmPassword
-                      ? "border-red-500"
-                      : ""
-                  }
-                />
-                {formik.touched.confirmPassword &&
-                  formik.errors.confirmPassword && (
-                    <p className="text-sm text-red-500">
-                      {formik.errors.confirmPassword}
-                    </p>
-                  )}
+              <div className="mt-12 grid grid-cols-2 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-orange-300">50K+</div>
+                  <div className="text-sm text-gray-300">Happy Customers</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-orange-300">200+</div>
+                  <div className="text-sm text-gray-300">
+                    Partner Restaurants
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
 
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Resetting Password...
-                  </>
-                ) : (
-                  "Reset Password"
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-8">
+          <div className="w-full max-w-md">
+            <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm lg:bg-white">
+              <CardHeader className="space-y-2 text-center pb-8">
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-4">
+                  <Lock className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                  Reset Password
+                </CardTitle>
+                <CardDescription className="text-gray-600 text-base">
+                  Create a new strong password for your account
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-6">
+                {error && (
+                  <Alert
+                    variant="destructive"
+                    className="border-red-200 bg-red-50"
+                  >
+                    <AlertTitle className="text-red-800">Error</AlertTitle>
+                    <AlertDescription className="text-red-700">
+                      {error}
+                    </AlertDescription>
+                  </Alert>
                 )}
-              </Button>
-            </form>
-          </CardContent>
-          <CardFooter>
-            <Button
-              variant="ghost"
-              className="w-full text-sm text-gray-600"
-              onClick={() => router.push("/auth/sign-in")}
-            >
-              Back to Sign In
-            </Button>
-          </CardFooter>
-        </Card>
+
+                {success && (
+                  <Alert className="border-green-200 bg-green-50">
+                    <AlertTitle className="text-green-800">Success!</AlertTitle>
+                    <AlertDescription className="text-green-700">
+                      {success}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                <form onSubmit={formik.handleSubmit} className="space-y-5">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="password"
+                      className="text-sm font-semibold text-gray-700"
+                    >
+                      New Password
+                    </label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      {...formik.getFieldProps("password")}
+                      className={`border-2 transition-all duration-200 focus:border-orange-400 h-12 ${
+                        formik.touched.password && formik.errors.password
+                          ? "border-red-400 bg-red-50"
+                          : "border-gray-200 focus:bg-white"
+                      }`}
+                    />
+                    {formik.touched.password && formik.errors.password && (
+                      <p className="text-xs text-red-500 mt-1">
+                        {formik.errors.password}
+                      </p>
+                    )}
+                    <div className="text-xs text-gray-500">
+                      Password must be at least 8 characters with uppercase,
+                      lowercase, and numbers
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="text-sm font-semibold text-gray-700"
+                    >
+                      Confirm New Password
+                    </label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="••••••••"
+                      {...formik.getFieldProps("confirmPassword")}
+                      className={`border-2 transition-all duration-200 focus:border-orange-400 h-12 ${
+                        formik.touched.confirmPassword &&
+                        formik.errors.confirmPassword
+                          ? "border-red-400 bg-red-50"
+                          : "border-gray-200 focus:bg-white"
+                      }`}
+                    />
+                    {formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword && (
+                        <p className="text-xs text-red-500 mt-1">
+                          {formik.errors.confirmPassword}
+                        </p>
+                      )}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full h-12 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-xl shadow-lg transition-all duration-200 transform hover:scale-[1.02] mt-8"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Resetting Password...
+                      </>
+                    ) : (
+                      "Reset Password"
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+
+              <CardFooter className="pt-6 pb-8">
+                <div className="w-full text-center">
+                  <p className="text-sm text-gray-600">
+                    Remember your password?{" "}
+                    <Link
+                      href="/auth/sign-in"
+                      className="font-semibold text-orange-600 hover:text-orange-700 transition-colors"
+                    >
+                      Sign in here
+                    </Link>
+                  </p>
+                </div>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
       </div>
+    </div>
+  );
+};
+
+const ResetPassword = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+        </div>
+      }
+    >
+      <ResetPasswordContent />
     </Suspense>
   );
 };

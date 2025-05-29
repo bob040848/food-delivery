@@ -6,7 +6,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import Image from "next/image";
+import { Loader2, User, Star, CheckCircle, Clock, Truck } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,12 @@ const SignIn = () => {
   const { login } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const cloudinaryBaseUrl = "https://res.cloudinary.com/ddrmhu7ak/image/upload";
+  const imagePublicId = "sign-up-food-delivery-pic_bnxl0o";
+
+  const heroImageUrl = `${cloudinaryBaseUrl}/f_auto,q_auto,w_1200,h_800,c_fill/${imagePublicId}.png`;
 
   const formik = useFormik({
     initialValues: {
@@ -72,96 +79,210 @@ const SignIn = () => {
   });
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-slate-50">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
-            Sign In
-          </CardTitle>
-          <CardDescription className="text-center">
-            Enter your credentials to access your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <form onSubmit={formik.handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email Address
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                {...formik.getFieldProps("email")}
-                className={
-                  formik.touched.email && formik.errors.email
-                    ? "border-red-500"
-                    : ""
-                }
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+      <div className="flex min-h-screen">
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+          <div className="absolute inset-0">
+            {!imageError ? (
+              <Image
+                src={heroImageUrl}
+                alt="Delicious food delivery"
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                quality={85}
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgMAAAAAAAAAAAAAAAAAAAECEgMR/9oADAMBAAIRAxEAPwCdABmZOxpNnaMg4HjMP/9k="
+                onError={() => setImageError(true)}
               />
-              {formik.touched.email && formik.errors.email && (
-                <p className="text-sm text-red-500">{formik.errors.email}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="text-sm font-medium">
-                  Password
-                </label>
-                <Link
-                  href="/auth/forgot-password"
-                  className="text-sm text-blue-600 hover:text-blue-800"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                {...formik.getFieldProps("password")}
-                className={
-                  formik.touched.password && formik.errors.password
-                    ? "border-red-500"
-                    : ""
-                }
-              />
-              {formik.touched.password && formik.errors.password && (
-                <p className="text-sm text-red-500">{formik.errors.password}</p>
-              )}
-            </div>
-
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
-                </>
-              ) : (
-                "Sign In"
-              )}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <div className="text-sm text-center text-gray-500">
-            Don't have an account?{" "}
-            <Link
-              href="/auth/sign-up"
-              className="text-blue-600 hover:text-blue-800"
-            >
-              Sign up
-            </Link>
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-red-500 to-pink-600"></div>
+            )}
           </div>
-        </CardFooter>
-      </Card>
+
+          <div className="absolute inset-0 bg-black/40"></div>
+
+          <div className="relative z-10 flex flex-col justify-center items-start p-12 text-white">
+            <div className="max-w-md">
+              <h1 className="text-4xl font-bold mb-6 leading-tight">
+                Welcome Back
+                <br />
+                <span className="text-orange-300">Food Lover!</span>
+              </h1>
+
+              <p className="text-xl mb-8 text-gray-200 leading-relaxed">
+                Sign in to continue your delicious journey with our amazing food
+                delivery service.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                    <Truck className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg">Fast 30-minute delivery</span>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg">Fresh & quality guaranteed</span>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                    <Star className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg">Top-rated restaurants</span>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <Clock className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg">24/7 customer support</span>
+                </div>
+              </div>
+
+              <div className="mt-12 grid grid-cols-2 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-orange-300">50K+</div>
+                  <div className="text-sm text-gray-300">Happy Customers</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-orange-300">200+</div>
+                  <div className="text-sm text-gray-300">
+                    Partner Restaurants
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-8">
+          <div className="w-full max-w-md">
+            <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm lg:bg-white">
+              <CardHeader className="space-y-2 text-center pb-8">
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-4">
+                  <User className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                  Welcome Back
+                </CardTitle>
+                <CardDescription className="text-gray-600 text-base">
+                  Enter your credentials to access your account
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-6">
+                {error && (
+                  <Alert
+                    variant="destructive"
+                    className="border-red-200 bg-red-50"
+                  >
+                    <AlertTitle className="text-red-800">Error</AlertTitle>
+                    <AlertDescription className="text-red-700">
+                      {error}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                <form onSubmit={formik.handleSubmit} className="space-y-5">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="email"
+                      className="text-sm font-semibold text-gray-700"
+                    >
+                      Email Address
+                    </label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="you@example.com"
+                      {...formik.getFieldProps("email")}
+                      className={`border-2 transition-all duration-200 focus:border-orange-400 h-12 ${
+                        formik.touched.email && formik.errors.email
+                          ? "border-red-400 bg-red-50"
+                          : "border-gray-200 focus:bg-white"
+                      }`}
+                    />
+                    {formik.touched.email && formik.errors.email && (
+                      <p className="text-xs text-red-500 mt-1">
+                        {formik.errors.email}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label
+                        htmlFor="password"
+                        className="text-sm font-semibold text-gray-700"
+                      >
+                        Password
+                      </label>
+                      <Link
+                        href="/auth/forgot-password"
+                        className="text-sm text-orange-600 hover:text-orange-700 font-medium transition-colors"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      {...formik.getFieldProps("password")}
+                      className={`border-2 transition-all duration-200 focus:border-orange-400 h-12 ${
+                        formik.touched.password && formik.errors.password
+                          ? "border-red-400 bg-red-50"
+                          : "border-gray-200 focus:bg-white"
+                      }`}
+                    />
+                    {formik.touched.password && formik.errors.password && (
+                      <p className="text-xs text-red-500 mt-1">
+                        {formik.errors.password}
+                      </p>
+                    )}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full h-12 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-xl shadow-lg transition-all duration-200 transform hover:scale-[1.02] mt-8"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Signing you in...
+                      </>
+                    ) : (
+                      "Sign In"
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+
+              <CardFooter className="pt-6 pb-8">
+                <div className="w-full text-center">
+                  <p className="text-sm text-gray-600">
+                    Don't have an account?{" "}
+                    <Link
+                      href="/auth/sign-up"
+                      className="font-semibold text-orange-600 hover:text-orange-700 transition-colors"
+                    >
+                      Sign up here
+                    </Link>
+                  </p>
+                </div>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -9,7 +9,6 @@ import {
   Calendar,
   DollarSign,
   Package,
-  User,
   Search,
   Filter,
   Loader2,
